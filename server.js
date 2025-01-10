@@ -1,3 +1,4 @@
+// Import required modules
 const express = require('express');
 const { Client } = require('whatsapp-web.js');
 const ytdl = require('ytdl-core');
@@ -22,16 +23,18 @@ app.get('/send', (req, res) => {
         return res.status(400).send('Please provide name and type.');
     }
 
-    // Download YouTube video/audio
-    if (type === 'music') {
-        const stream = ytdl(name, { filter: 'audioonly' });
-        client.sendMessage('<Your-WhatsApp-Number>', { audio: stream });
-    } else if (type === 'video') {
-        const stream = ytdl(name, { filter: 'videoandaudio' });
-        client.sendMessage('<Your-WhatsApp-Number>', { video: stream });
+    try {
+        if (type === 'music') {
+            const stream = ytdl(name, { filter: 'audioonly' });
+            client.sendMessage('<Your-WhatsApp-Number>', { audio: stream });
+        } else if (type === 'video') {
+            const stream = ytdl(name, { filter: 'videoandaudio' });
+            client.sendMessage('<Your-WhatsApp-Number>', { video: stream });
+        }
+        res.send('Music/Video sent to WhatsApp!');
+    } catch (error) {
+        res.status(500).send('Error in processing the request');
     }
-
-    res.send('Music/Video sent to WhatsApp!');
 });
 
 // Start server
